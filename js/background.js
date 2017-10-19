@@ -61,7 +61,7 @@ async function addPrivateMenuItem() {
   });
 }
 
-function makePrivate(tab) {
+function toPrivateWindow(tab) {
   if (!tab.url.startsWith('http')) { return; }
   browser.windows.create({"url":tab.url, "incognito":true});
   if (closeExistingTab) {
@@ -90,7 +90,7 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
           break;
         case 'fake-contextMenu-click':
           //console.log("menu item clicked " + aMessage.info.menuItemId);
-          makePrivate(aMessage.tab);
+          toPrivateWindow(aMessage.tab);
           break;
       }
       break;
