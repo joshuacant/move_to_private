@@ -1,11 +1,12 @@
+"use strict";
 const kTST_ID = 'treestyletab@piro.sakura.ne.jp';
 const ext_ID = 'tst-open_in_private@dontpokebadgers.com'
 var closeExistingTab = true;
 var removeFromHistory = false;
 
-function initialRegisterToTST() {
-  setTimeout(registerToTST, 3000);
-}
+//function initialRegisterToTST() {
+//  setTimeout(registerToTST, 100);
+//}
 
 async function registerToTST() {
   var success = await browser.runtime.sendMessage(kTST_ID, {
@@ -13,12 +14,9 @@ async function registerToTST() {
     name: ext_ID,
     //style: '.tab {color: red;}'
   })
-//  if (!success) {
-//    console.log(ext_ID+" unable to register.");
-//    }
-//  else {
-//    console.log(ext_ID+" registered sucessfully.");
-//  }
+  if (success) {
+    await addPrivateMenuItem();
+  }
 }
 
 async function loadOptions(options) {
@@ -52,7 +50,7 @@ async function addPrivateMenuItem() {
   });
   var id = 1;
   var type = 'normal';
-  var title = 'Open Tab in Private Mode';
+  var title = 'Open Tab in Private Window';
   var parentId = null;
   let params = {id, type, title, contexts: ['tab']};
   await browser.runtime.sendMessage(kTST_ID, {
@@ -72,14 +70,12 @@ function toPrivateWindow(tab) {
   }
 }
 
-initialRegisterToTST();
+//initialRegisterToTST();
+registerToTST();
 var initalizingOptions = browser.storage.local.get();
 initalizingOptions.then(loadOptions);
 browser.storage.onChanged.addListener(reloadOptions);
-addPrivateMenuItem();
 browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
-//  var refreshingOptions = browser.storage.local.get();
-//  refreshingOptions.then(loadOptions);
   switch (aSender.id) {
     case kTST_ID:
       //console.log(aMessage.type)

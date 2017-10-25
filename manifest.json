@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "TST Open in Private",
-  "version": "0.1.0",
-  "description": "Opens the current tab in a private session window.",
+  "version": "0.9.0",
+  "description": "Open an existing tab in a private session window.",
   "homepage_url": "http://dontpokebadgers.com/",
   "icons": {
     "96": "icons/icon-96.png"
