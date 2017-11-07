@@ -1,20 +1,18 @@
 "use strict";
 const kTST_ID = 'treestyletab@piro.sakura.ne.jp';
-const ext_ID = 'tst-open_in_private@dontpokebadgers.com'
+const ext_ID = 'tst-open_in_private@dontpokebadgers.com';
 var closeExistingTab = true;
 var removeFromHistory = false;
-
-//function initialRegisterToTST() {
-//  setTimeout(registerToTST, 100);
-//}
 
 async function registerToTST() {
   var success = await browser.runtime.sendMessage(kTST_ID, {
     type: 'register-self',
     name: ext_ID,
     //style: '.tab {color: red;}'
-  })
+  });
   if (success) {
+    //console.log(ext_ID + " successfully registered");
+    clearTimeout(registrationTimer);
     await addPrivateMenuItem();
   }
 }
@@ -70,8 +68,7 @@ function toPrivateWindow(tab) {
   }
 }
 
-//initialRegisterToTST();
-registerToTST();
+var registrationTimer = setInterval(registerToTST, 2000);
 var initalizingOptions = browser.storage.local.get();
 initalizingOptions.then(loadOptions);
 browser.storage.onChanged.addListener(reloadOptions);
