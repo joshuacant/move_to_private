@@ -5,6 +5,7 @@
   "description": "Open an existing tab in a private session window.",
   "homepage_url": "http://dontpokebadgers.com/",
   "icons": {
+    "48": "icons/icon-48.png",
     "96": "icons/icon-96.png"
   },
 
