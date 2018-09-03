@@ -1,20 +1,61 @@
 "use strict";
 const kTST_ID = 'treestyletab@piro.sakura.ne.jp';
 const ext_ID = 'tst-open_in_private@dontpokebadgers.com';
-var closeExistingTab = true;
-var removeFromHistory = false;
+let closeExistingTab = true;
+let removeFromHistory = false;
+let registrationStatus = false;
+
+window.addEventListener('DOMContentLoaded', async () => {
+    const initalizingOptions = await browser.storage.local.get();
+    loadOptions(initalizingOptions);
+    let registrationTimeout = 0;
+    while (registrationStatus === false && registrationTimeout < 10000) {
+        console.log("registering tst-open_in_private");
+        await timeout(registrationTimeout);
+        await registerToTST();
+        registrationTimeout = registrationTimeout + 1000;
+    }
+    browser.storage.onChanged.addListener(reloadOptions);
+    browser.runtime.onMessageExternal.addListener(onMessageExternal);
+});
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function onMessageExternal(aMessage, aSender) {
+    if (aSender.id === kTST_ID) {
+      //console.log(aMessage.type)
+      switch (aMessage.type) {
+        case 'ready':
+          //console.log("re-registering");
+          registerToTST();
+          break;
+        case 'fake-contextMenu-click':
+          //console.log("menu item clicked " + aMessage.info.menuItemId);
+          toPrivateWindow(aMessage.tab);
+          break;
+      }
+  }
+};
 
 async function registerToTST() {
-  var success = await browser.runtime.sendMessage(kTST_ID, {
-    type: 'register-self',
-    name: ext_ID,
-    //style: '.tab {color: red;}'
-  });
-  if (success) {
-    //console.log(ext_ID + " successfully registered");
-    clearTimeout(registrationTimer);
-    await addPrivateMenuItem();
-  }
+    try {
+        const self = await browser.management.getSelf();
+        let success = await browser.runtime.sendMessage(kTST_ID, {
+            type: 'register-self',
+            name: self.id,
+            listeningTypes: ['fake-contextMenu-click', 'tabbar-clicked', 'ready'],
+        });
+        console.log("tst-open_in_private registration successful");
+        registrationStatus = true;
+        await addPrivateMenuItem();
+        return true;
+    }
+    catch (ex) {
+        console.log("tst-open_in_private registration failed with " + ex);
+        return false;
+    }
 }
 
 async function loadOptions(options) {
@@ -38,7 +79,7 @@ async function createOptions() {
     closeExistingTab: closeExistingTab
   });
   //console.log("creating default options");
-  var reloadingOptions = browser.storage.local.get();
+  let reloadingOptions = browser.storage.local.get();
   reloadingOptions.then(loadOptions);
 }
 
@@ -46,10 +87,10 @@ async function addPrivateMenuItem() {
   await browser.runtime.sendMessage(kTST_ID, {
     type: 'fake-contextMenu-remove-all'
   });
-  var id = 1;
-  var type = 'normal';
-  var title = 'Open Tab in Private Window';
-  var parentId = null;
+  let id = 1;
+  let type = 'normal';
+  let title = 'Open Tab in Private Window';
+  let parentId = null;
   let params = {id, type, title, contexts: ['tab']};
   await browser.runtime.sendMessage(kTST_ID, {
     type: 'fake-contextMenu-create',
@@ -67,29 +108,3 @@ function toPrivateWindow(tab) {
     browser.history.deleteUrl({"url": tab.url});
   }
 }
-
-var registrationTimer = setInterval(registerToTST, 2000);
-var initalizingOptions = browser.storage.local.get();
-initalizingOptions.then(loadOptions);
-browser.storage.onChanged.addListener(reloadOptions);
-browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
-  switch (aSender.id) {
-    case kTST_ID:
-      //console.log(aMessage.type)
-      switch (aMessage.type) {
-        case 'ready':
-          //console.log("re-registering");
-          registerToTST();
-          break;
-        case 'fake-contextMenu-click':
-          //console.log("menu item clicked " + aMessage.info.menuItemId);
-          toPrivateWindow(aMessage.tab);
-          break;
-      }
-      break;
-  }
-});
-
-//var success = await browser.runtime.sendMessage(kTST_ID, {
-//  type: 'unregister-self'
-//});
