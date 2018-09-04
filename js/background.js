@@ -65,18 +65,21 @@ async function loadOptions(options) {
   }
   else {
     closeExistingTab = options.closeExistingTab;
+    removeFromHistory = options.removeFromHistory;
     //console.log(options);
   }
 }
 
 async function reloadOptions(options) {
   closeExistingTab = options.closeExistingTab.newValue;
+  removeFromHistory = options.removeFromHistory.newValue;
   //console.log(options);
 }
 
 async function createOptions() {
   browser.storage.local.set({
-    closeExistingTab: closeExistingTab
+    closeExistingTab: closeExistingTab,
+    removeFromHistory: removeFromHistory
   });
   //console.log("creating default options");
   let reloadingOptions = browser.storage.local.get();
