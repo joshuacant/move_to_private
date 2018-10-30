@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Move to Private Window",
-  "version": "1.0",
+  "version": "2.0",
   "description": "Open an existing tab in a private session window.",
   "homepage_url": "https://github.com/joshuacant/",
   "icons": {
@@ -31,7 +31,7 @@
   
   "applications": {
     "gecko": {
-      "id": "move-to-private@dontpokebadgers.com",
+      "id": "tst-open_in_private@dontpokebadgers.com",
       "strict_min_version": "57.0a1"
     }
   }
