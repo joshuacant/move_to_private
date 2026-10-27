@@ -6,6 +6,9 @@ async function _init() {
 
   await loadOptions(self);
   await addPrivateMenuItem();
+
+  browser.storage.onChanged.addListener(reloadOptions);
+  browser.menus.onClicked.addListener(toPrivateWindow);
 }
 
 let closeExistingTab = true;
@@ -62,5 +65,3 @@ function toPrivateWindow(info, tab) {
 }
 
 _init();
-browser.storage.onChanged.addListener(reloadOptions);
-browser.menus.onClicked.addListener(toPrivateWindow);
