@@ -1,10 +1,10 @@
 "use strict";
 
 async function _init() {
-  const self = await browser.management.getSelf();
-  console.log(self.id + " loading");
+  const gettingSelf = await browser.management.getSelf();
+  console.log(gettingSelf.id + " loading");
 
-  await loadOptions(self);
+  await loadOptions(gettingSelf);
   await addPrivateMenuItem();
 
   browser.storage.onChanged.addListener(reloadOptions);
@@ -13,10 +13,10 @@ async function _init() {
 
 let closeExistingTab = true;
 let removeFromHistory = false;
-async function loadOptions(self) {
+async function loadOptions(gettingSelf) {
   let options = await browser.storage.local.get();
   if (Object.keys(options).length == 0) {
-    await createOptions(self);
+    await createOptions(gettingSelf);
   }
   else {
     closeExistingTab = options.closeExistingTab;
@@ -29,8 +29,8 @@ async function reloadOptions(options) {
   removeFromHistory = options.removeFromHistory.newValue;
 }
 
-async function createOptions(self) {
-  console.log(self.id + " creating options");
+async function createOptions(gettingSelf) {
+  console.log(gettingSelf.id + " creating options");
   await browser.storage.local.set({
     closeExistingTab: closeExistingTab,
     removeFromHistory: removeFromHistory
