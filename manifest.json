@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Move to Private Window",
   "version": "2.2",
   "description": "Open an existing tab in a private session window.",
@@ -19,8 +19,7 @@
   ],
 
   "options_ui": {
-    "page": "options/options.html",
-    "browser_style": true
+    "page": "options/options.html"
   },
 
   "background": {
