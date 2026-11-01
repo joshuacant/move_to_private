@@ -16,7 +16,7 @@ let removeFromHistory = false;
 async function loadOptions(self) {
   let options = await browser.storage.local.get();
   if (Object.keys(options).length == 0) {
-    createOptions(self);
+    await createOptions(self);
   }
   else {
     closeExistingTab = options.closeExistingTab;

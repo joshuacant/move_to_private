@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Move to Private Window",
-  "version": "2.1.1",
+  "version": "2.2",
   "description": "Open an existing tab in a private session window.",
   "homepage_url": "https://github.com/joshuacant/move_to_private",
   "icons": {
