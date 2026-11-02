@@ -7,6 +7,7 @@ async function _init() {
   await loadOptions(gettingSelf);
   await addPrivateMenuItem();
 
+  self.setInterval(() => browser.runtime.getPlatformInfo(), 2e4);
   browser.storage.onChanged.addListener(reloadOptions);
   browser.menus.onClicked.addListener(toPrivateWindow);
 }
